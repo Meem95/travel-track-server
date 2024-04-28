@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config();
@@ -54,6 +54,24 @@ async function run() {
         const result = await travelCollection.insertOne(newLocation);
         res.send(result);
     })
+
+    app.get('/location/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await travelCollection.findOne(query);
+      res.send(result);
+  })
+    //update route
+   
+  //delete
+   //delete method
+   app.delete('/location/:id', async(req, res)=>{
+    const id = req.params.id;
+    console.log("delete from database", id)
+    const query = {_id:new ObjectId (id)}
+    const result = await travelCollection.deleteOne(query);
+    res.send(result);
+  })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
