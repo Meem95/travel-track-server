@@ -32,8 +32,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const travelCollection = client.db('travelDB').collection('location');
+    const countryCollection = client.db('travelDB').collection('countries');
+    //country get route
+    app.get('/country', async (req, res) => {
+        const cursor = countryCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //tourist spot get route
+    app.get('/location', async (req, res) => {
+        const cursor = travelCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
 
-    app.post('/addLocation', async (req, res) => {
+
+    //post route
+    app.post('/location', async (req, res) => {
         const newLocation = req.body;
         console.log(newLocation);
         const result = await travelCollection.insertOne(newLocation);
