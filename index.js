@@ -62,7 +62,30 @@ async function run() {
       res.send(result);
   })
     //update route
-   
+    app.put('/location/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const options = { upsert: true };
+      const updatedLocation = req.body;
+
+      const location = {
+          $set: {
+              tourists_spot_name: updatedLocation.tourists_spot_name, 
+              country_Name: updatedLocation.country_Name, 
+              average_cost: updatedLocation.average_cost, 
+              totalVisitorsPerYear: updatedLocation.totalVisitorsPerYear, 
+              location: updatedLocation.location, 
+              seasonality: updatedLocation.seasonality, 
+              image: updatedLocation.image,
+              travel_time: updatedLocation.travel_time,
+              short_description: updatedLocation.short_description,
+             
+          }
+      }
+
+      const result = await travelCollection.updateOne(filter, location, options);
+      res.send(result);
+  })
   //delete
    //delete method
    app.delete('/location/:id', async(req, res)=>{
