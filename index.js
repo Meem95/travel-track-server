@@ -9,8 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-//travelAgency
-//AKo34ufNo4ab4HO3
+
 
 console.log(process.env.DB_USER);
 console.log(process.env.DB_PASS);
@@ -40,6 +39,19 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    app.get('/location-by-country', async (req, res) => {
+      try {
+        const country = req.query.country;
+        const query = {country_Name : country };
+        const result = await travelCollection.find(query).toArray();
+        res.json(result);
+      } catch (error) {
+        console.error('Error fetching data by country:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
     //tourist spot get route
     app.get("/location", async (req, res) => {
       const cursor = travelCollection.find();
@@ -109,11 +121,33 @@ async function run() {
     });
 
     // user related apis
-    app.get("/user", async (req, res) => {
+   
+    app.get('/user', async (req, res) => {
       const cursor = userCollection.find();
       const users = await cursor.toArray();
       res.send(users);
-    });
+  })
+
+  app.post('/user', async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+  });
+
+  app.patch('/user', async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email }
+      const updateDoc = {
+          $set: {
+              lastLoggedAt: user.lastLoggedAt
+          }
+      }
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result);
+  })
+
+  
 
     
 
